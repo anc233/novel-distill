@@ -1,0 +1,50 @@
+name: Bug 报告
+description: 报告一个可复现的问题
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        请先跑 `python -m novel_distill doctor`，把输出贴进来；不要上传小说正文或私密数据。
+  - type: textarea
+    id: what
+    attributes:
+      label: 现象
+      description: 期望发生什么，实际发生什么
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      description: 具体命令、涉及的章节号或批号；可用自制文本代替真实小说
+      placeholder: |
+        1. python -m novel_distill add demo.txt --slug demo
+        2. python -m novel_distill pack demo --from 1 --count 5
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: doctor
+    attributes:
+      label: doctor 输出
+      render: text
+    validations:
+      required: false
+  - type: input
+    id: env
+    attributes:
+      label: 环境
+      description: 操作系统、Python 版本、是否装了可选依赖（seg/fast/schema/compat/vault/dedup/mcp/gui）
+      placeholder: Windows 11 / Python 3.14.6 / [all]
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: 报错信息
+      description: 完整 traceback 或 --json 输出（记得删掉个人路径）
+      render: text
+    validations:
+      required: false

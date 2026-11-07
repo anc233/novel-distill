@@ -1,0 +1,33 @@
+__pycache__/
+*.py[cod]
+.venv/
+# workspace 只保留说明文件，书数据一律不入库
+workspace/*
+!workspace/README.md
+*.db-wal
+*.db-shm
+*.log
+*.exe
+.coverage
+htmlcov/
+*.egg-info/
+dist/
+build/
+# PyInstaller spec 是打包源码（packaging/ 下的要入库）
+*.spec
+!packaging/*.spec
+*.zip
+# GUI 运行时设置（每台机器自己的路径/窗口尺寸）
+novel_distill_gui.json
+vault/
+.tmp/
+.pip-tmp/
+.pylibs/
+.scratch/
+# 编辑器
+.idea/
+.vscode/
+# Python Install Manager 自更新缓存（勿入库）
+Python/
+# 误用 %SystemDrive% 展开产生的目录
+%SystemDrive%/

@@ -1,0 +1,119 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "novel-distill"
+version = "0.1.0"
+description = "把网络小说蒸馏成 Obsidian 结构化设定库"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "anc233", email = "1013172999@qq.com" }]
+keywords = ["obsidian", "novel", "knowledge-base", "chinese", "nlp", "distillation"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: Console",
+  "Intended Audience :: End Users/Desktop",
+  "Natural Language :: Chinese (Simplified)",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Text Processing :: Markup",
+]
+dependencies = []
+
+[project.urls]
+# 仓库地址；改仓库名或迁移账号时与 README 的 git clone 地址一起改
+Homepage = "https://github.com/anc233/novel-distill"
+Repository = "https://github.com/anc233/novel-distill"
+Issues = "https://github.com/anc233/novel-distill/issues"
+Changelog = "https://github.com/anc233/novel-distill/blob/main/CHANGELOG.md"
+Documentation = "https://github.com/anc233/novel-distill/blob/main/docs/MCP.md"
+
+[project.optional-dependencies]
+# 全部可选：未安装时各模块自动退回标准库实现，程序行为不变。
+seg = ["jieba>=0.42.1"]                                  # 中文分词（keywords）
+fast = ["rapidfuzz>=3.9"]                                # 相似度（实体名/术语匹配）
+schema = ["jsonschema>=4.20"]                            # 抽取结果的严格校验
+compat = [
+  "pypinyin>=0.50",
+  "networkx>=3.2",
+  "python-frontmatter>=1.0",
+  "chardet>=5.2",
+]
+vault = ["obsidiantools>=0.11"]                          # 直接读 Obsidian vault 校验
+dedup = ["datasketch>=1.6"]                              # MinHash 近重复检测
+mcp = ["mcp>=2.0"]                                       # 官方 MCP SDK（MCP server）
+gui = ["customtkinter>=5.2", "tkinterdnd2>=0.4"]         # 图形界面（tkinter 随 Python）
+all = [
+  "jieba>=0.42.1",
+  "rapidfuzz>=3.9",
+  "jsonschema>=4.20",
+  "pypinyin>=0.50",
+  "networkx>=3.2",
+  "python-frontmatter>=1.0",
+  "chardet>=5.2",
+  "obsidiantools>=0.11",
+  "datasketch>=1.6",
+  "mcp>=2.0",
+  "customtkinter>=5.2",
+]
+dev = ["ruff>=0.17", "pytest>=9", "pytest-cov>=7", "build>=1.6", "pyinstaller>=6.10"]
+
+[project.scripts]
+novel-distill = "novel_distill.cli:main"
+novel-distill-mcp = "novel_distill.mcp_server:main"
+
+[tool.setuptools.packages.find]
+include = ["novel_distill*"]
+
+[tool.setuptools.package-data]
+novel_distill = ["store/schema.sql"]
+
+[tool.pytest.ini_options]
+# 默认的 .pytest_cache 曾被 Python 3.14 的 mkdir(mode=0o700) 写成受限 ACL 目录
+# （Low 完整性 + no-write-up，连创建者都写不进去，且删不掉），改放到 gitignored 的 .tmp。
+cache_dir = ".tmp/.pytest_cache"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+source = ["novel_distill"]
+
+[tool.coverage.report]
+skip_empty = true
+
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+extend-exclude = [".pylibs", ".tmp", "workspace", "vault"]
+
+[tool.ruff.lint]
+select = [
+  "E4", "E7", "E9",  # pycodestyle 硬错误
+  "F",               # pyflakes
+  "W",
+  "I",               # import 排序
+  "B",               # bugbear
+  "C4",
+  "SIM",
+  "UP",              # pyupgrade（按 3.12 目标改写）
+  "RUF",
+  "PIE",
+  "FURB",
+  "PERF",
+  "BLE",             # 裸 except：边界处用 noqa 写明理由
+  "S",               # bandit 安全规则
+]
+ignore = [
+  "E501",     # 中文注释不强行折行，行长由 line-length 兜底
+  "RUF001",   # 全角标点是中文正文的一部分，不是歧义字符
+  "RUF002",
+  "RUF003",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]  # 测试里 assert 是本职
